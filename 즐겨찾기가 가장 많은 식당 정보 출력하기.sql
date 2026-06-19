@@ -1,0 +1,24 @@
+-- 즐겨찾기가 가장 많은 식당 정보 출력하기
+-- https://school.programmers.co.kr/learn/courses/30/lessons/131123
+WITH RN AS(
+SELECT
+    REST_ID,
+    REST_NAME,
+    FOOD_TYPE,
+    FAVORITES,
+    RANK() OVER(PARTITION BY FOOD_TYPE ORDER BY FAVORITES DESC) AS RANK_FAVORITE
+FROM 
+    REST_INFO
+)
+
+SELECT
+    FOOD_TYPE,
+    REST_ID,
+    REST_NAME,
+    FAVORITES
+FROM 
+    RN
+WHERE
+    RANK_FAVORITE = 1
+ORDER BY
+    FOOD_TYPE DESC;
