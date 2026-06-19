@@ -1,0 +1,33 @@
+-- 특정 기간동안 대여 가능한 자동차들의 대여비용 구하기
+-- https://school.programmers.co.kr/learn/courses/30/lessons/157339
+SELECT 
+    CAR_ID,
+    C.CAR_TYPE,
+    ROUND(DAILY_FEE * 30 * ((100-DISCOUNT_RATE)/100),0) AS FEE
+FROM(
+    SELECT A.CAR_ID, A.CAR_TYPE, A.DAILY_FEE
+    FROM (SELECT *
+            FROM CAR_RENTAL_COMPANY_CAR
+            WHERE CAR_TYPE IN ('세단','SUV')) A
+        INNER JOIN
+        (SELECT *
+            FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
+            WHERE CAR_ID NOT IN(
+                SELECT CAR_ID
+                FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY 
+                WHERE 
+                    '2022-11' BETWEEN DATE_FORMAT(START_DATE,'%Y-%m') AND DATE_FORMAT(END_DATE,'%Y-%m')
+            )
+        ) B
+        ON A.CAR_ID = B.CAR_ID
+    GROUP BY A.CAR_ID, A.CAR_TYPE, A.DAILY_FEE
+) C
+INNER JOIN CAR_RENTAL_COMPANY_DISCOUNT_PLAN D
+ON C.CAR_TYPE = D.CAR_TYPE
+WHERE 
+    DURATION_TYPE = '30일 이상'
+    AND DAILY_FEE * 30 * ((100-DISCOUNT_RATE)/100) BETWEEN 500000 AND 2000000
+ORDER BY 
+    FEE DESC,
+    C.CAR_TYPE,
+    CAR_ID DESC
