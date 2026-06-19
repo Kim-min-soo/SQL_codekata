@@ -5,4 +5,4 @@ SELECT
 FROM
     Products
 WHERE
-    low_fats = 'Y' and recyclable = 'Y'
+    low_fats = 'Y' and recyclable = 'Y';

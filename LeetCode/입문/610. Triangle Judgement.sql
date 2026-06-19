@@ -5,4 +5,4 @@ SELECT
     y,
     z,
     if((x<y+z and y<x+z and z<x+y), 'Yes', 'No') as triangle
-FROM Triangle
+FROM Triangle;
